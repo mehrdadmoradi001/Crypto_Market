@@ -1,9 +1,8 @@
-
 import 'package:crypto_market/data/model/crypto.dart';
 import 'package:flutter/material.dart';
 
 class CoinListScreen extends StatefulWidget {
-   CoinListScreen({Key? key, this.cryptoList}) : super(key: key);
+  CoinListScreen({Key? key, this.cryptoList}) : super(key: key);
   List<Crypto>? cryptoList;
 
   @override
@@ -18,11 +17,20 @@ class _CoinListScreenState extends State<CoinListScreen> {
     // TODO: implement initState
     super.initState();
     cryptoList = widget.cryptoList;
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      body: SafeArea(
+        child: ListView.builder(
+          itemCount: cryptoList!.length,
+          itemBuilder: (BuildContext context, index) => ListTile(
+            title: Text(cryptoList![index].name),
+            subtitle: Text(cryptoList![index].symbol),
+          ),
+        ),
+      ),
+    );
   }
 }

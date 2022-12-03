@@ -1,4 +1,5 @@
 import 'package:crypto_market/data/model/crypto.dart';
+import 'package:crypto_market/screens/coin_list_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:dio/dio.dart';
@@ -15,6 +16,7 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getData();
   }
 
   @override
@@ -37,5 +39,14 @@ class _HomeScreenState extends State<HomeScreen> {
     List<Crypto> cryptoList = response.data['data']
         .map<Crypto>((jsonMapObject) => Crypto.fromMapJson(jsonMapObject))
         .toList();
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CoinListScreen(
+          cryptoList: cryptoList,
+        ),
+      ),
+    );
   }
 }
