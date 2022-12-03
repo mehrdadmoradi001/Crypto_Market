@@ -18,6 +18,7 @@ class _CoinListScreenState extends State<CoinListScreen> {
     // TODO: implement initState
     super.initState();
     cryptoList = widget.cryptoList;
+
   }
 
   @override
