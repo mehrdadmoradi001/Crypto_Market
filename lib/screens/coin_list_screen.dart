@@ -28,9 +28,54 @@ class _CoinListScreenState extends State<CoinListScreen> {
           itemBuilder: (BuildContext context, index) => ListTile(
             title: Text(cryptoList![index].name),
             subtitle: Text(cryptoList![index].symbol),
+            leading: SizedBox(
+              width: 30.0,
+              child: Center(
+                child: Text(
+                  cryptoList![index].rank.toString(),
+                ),
+              ),
+            ),
+            trailing: SizedBox(
+              width: 150.0,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        cryptoList![index].priceUsd.toStringAsFixed(2),
+                      ),
+                      Text(
+                        cryptoList![index].changePercent24hr.toStringAsFixed(2),
+                      ),
+                    ],
+                  ),
+                  SizedBox(
+                      width: 50.0,
+                      child: _getIconChangePercent(
+                          cryptoList![index].changePercent24hr)),
+                ],
+              ),
+            ),
           ),
         ),
       ),
     );
+  }
+
+  Widget _getIconChangePercent(double percentChange) {
+    return percentChange <= 0
+        ? Icon(
+            Icons.trending_down,
+            size: 24,
+            color: Colors.red,
+          )
+        : Icon(
+            Icons.trending_up,
+            size: 24,
+            color: Colors.green,
+          );
   }
 }
