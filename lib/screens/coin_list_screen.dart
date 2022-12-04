@@ -1,3 +1,4 @@
+import 'package:crypto_market/data/constants/constants.dart';
 import 'package:crypto_market/data/model/crypto.dart';
 import 'package:flutter/material.dart';
 
@@ -70,12 +71,12 @@ class _CoinListScreenState extends State<CoinListScreen> {
         ? Icon(
             Icons.trending_down,
             size: 24,
-            color: Colors.red,
+            color: redColor,
           )
         : Icon(
             Icons.trending_up,
             size: 24,
-            color: Colors.green,
+            color: greenColor,
           );
   }
 }

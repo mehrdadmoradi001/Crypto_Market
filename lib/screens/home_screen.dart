@@ -24,11 +24,16 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[800],
       body: SafeArea(
-        child: Center(
-          child: SpinKitSquareCircle(
-            color: Colors.white,
-            size: 80.0,
-          ),
+        child: Column(
+          children: [
+            Image(
+              image: AssetImage('assets/images/logo.png'),
+            ),
+            SpinKitWave(
+              color: Colors.white,
+              size: 80.0,
+            ),
+          ],
         ),
       ),
     );
