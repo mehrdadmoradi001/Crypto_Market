@@ -13,6 +13,7 @@ class CoinListScreen extends StatefulWidget {
 
 class _CoinListScreenState extends State<CoinListScreen> {
   List<Crypto>? cryptoList;
+  bool isSearchLoadingVisible = false;
 
   @override
   void initState() {
@@ -59,6 +60,13 @@ class _CoinListScreenState extends State<CoinListScreen> {
                     fillColor: greenColor,
                   ),
                 ),
+              ),
+            ),
+            Visibility(
+              visible: isSearchLoadingVisible,
+              child: Text(
+                'در حال آپدیت اطلاعات رمز ارزها...',
+                style: TextStyle(fontFamily: 'mr', color: greenColor),
               ),
             ),
             Expanded(
@@ -163,14 +171,31 @@ class _CoinListScreenState extends State<CoinListScreen> {
   }
 
   //get input enter Key word and change data for list
-  void _filterList(String enteredKeyWord) {
+  Future<void> _filterList(String enteredKeyWord) async {
     List<Crypto> cryptoResultList = [];
 
-    cryptoResultList = cryptoList!.where((element) => element.name.toLowerCase()
-        .contains(enteredKeyWord.toLowerCase())).toList();
+    if (enteredKeyWord.isEmpty) {
+      setState(() {
+        isSearchLoadingVisible = true;
+      });
+      var result = await _getData();
+      setState(() {
+        cryptoList = result; //update list
+        isSearchLoadingVisible = false;
+      });
+      return;
+    }
+
+    cryptoResultList = cryptoList!
+        .where((element) => element.name
+            .toLowerCase() //
+            .contains(enteredKeyWord.toLowerCase()))
+        .toList();
 
     setState(() {
       cryptoList = cryptoResultList;
     });
   }
+
+
 }
