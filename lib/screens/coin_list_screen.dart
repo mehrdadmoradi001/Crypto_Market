@@ -1,6 +1,7 @@
 import 'package:crypto_market/data/constants/constants.dart';
 import 'package:crypto_market/data/model/crypto.dart';
 import 'package:flutter/material.dart';
+import 'package:dio/dio.dart';
 
 class CoinListScreen extends StatefulWidget {
   CoinListScreen({Key? key, this.cryptoList}) : super(key: key);
@@ -34,16 +35,24 @@ class _CoinListScreenState extends State<CoinListScreen> {
         ),
       ),
       body: SafeArea(
-        child: ListView.builder(
-          itemCount: cryptoList!.length,
-          itemBuilder: (BuildContext context, index) => _getListTile(cryptoList![index]),
+        child: RefreshIndicator(
+          onRefresh: () async {
+            List<Crypto> freshData = await _getData();
+            setState(() {
+              cryptoList = freshData;
+            });
+          },
+          child: ListView.builder(
+            itemCount: cryptoList!.length,
+            itemBuilder: (BuildContext context, index) =>
+                _getListTile(cryptoList![index]),
+          ),
         ),
       ),
     );
   }
-  
-  
-  Widget _getListTile(Crypto crypto){
+
+  Widget _getListTile(Crypto crypto) {
     return ListTile(
       title: Text(
         crypto.name,
@@ -73,24 +82,19 @@ class _CoinListScreenState extends State<CoinListScreen> {
               children: [
                 Text(
                   crypto.priceUsd.toStringAsFixed(2),
-                  style: TextStyle(
-                      color: greyColor,
-                      fontSize: 16
-                  ),
+                  style: TextStyle(color: greyColor, fontSize: 16),
                 ),
                 Text(
                   crypto.changePercent24hr.toStringAsFixed(2),
                   style: TextStyle(
-                    color: _getColorChangeText(
-                        crypto.changePercent24hr),
+                    color: _getColorChangeText(crypto.changePercent24hr),
                   ),
                 ),
               ],
             ),
             SizedBox(
                 width: 50.0,
-                child: _getIconChangePercent(
-                    crypto.changePercent24hr)),
+                child: _getIconChangePercent(crypto.changePercent24hr)),
           ],
         ),
       ),
@@ -113,5 +117,13 @@ class _CoinListScreenState extends State<CoinListScreen> {
 
   Color _getColorChangeText(double percentChange) {
     return percentChange <= 0 ? redColor : greenColor;
+  }
+
+  Future<List<Crypto>> _getData() async {
+    var response = await Dio().get('https://api.coincap.io/v2/assets');
+    List<Crypto> cryptoList = response.data['data']
+        .map<Crypto>((jsonMapObject) => Crypto.fromMapJson(jsonMapObject))
+        .toList();
+    return cryptoList;
   }
 }
