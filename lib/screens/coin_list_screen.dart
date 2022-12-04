@@ -23,17 +23,34 @@ class _CoinListScreenState extends State<CoinListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: blackColor,
+      appBar: AppBar(
+        backgroundColor: blackColor,
+        automaticallyImplyLeading: false,
+        centerTitle: true,
+        title: Text(
+          'کریپتو بازار',
+          style: TextStyle(fontFamily: 'mr'),
+        ),
+      ),
       body: SafeArea(
         child: ListView.builder(
           itemCount: cryptoList!.length,
           itemBuilder: (BuildContext context, index) => ListTile(
-            title: Text(cryptoList![index].name),
-            subtitle: Text(cryptoList![index].symbol),
+            title: Text(
+              cryptoList![index].name,
+              style: TextStyle(color: greenColor),
+            ),
+            subtitle: Text(
+              cryptoList![index].symbol,
+              style: TextStyle(color: greyColor),
+            ),
             leading: SizedBox(
               width: 30.0,
               child: Center(
                 child: Text(
                   cryptoList![index].rank.toString(),
+                  style: TextStyle(color: greyColor),
                 ),
               ),
             ),
@@ -44,12 +61,21 @@ class _CoinListScreenState extends State<CoinListScreen> {
                 children: [
                   Column(
                     mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
                         cryptoList![index].priceUsd.toStringAsFixed(2),
+                        style: TextStyle(
+                          color: greyColor,
+                          fontSize: 16
+                        ),
                       ),
                       Text(
                         cryptoList![index].changePercent24hr.toStringAsFixed(2),
+                        style: TextStyle(
+                          color: _getColorChangeText(
+                              cryptoList![index].changePercent24hr),
+                        ),
                       ),
                     ],
                   ),
@@ -78,5 +104,9 @@ class _CoinListScreenState extends State<CoinListScreen> {
             size: 24,
             color: greenColor,
           );
+  }
+
+  Color _getColorChangeText(double percentChange) {
+    return percentChange <= 0 ? redColor : greenColor;
   }
 }
