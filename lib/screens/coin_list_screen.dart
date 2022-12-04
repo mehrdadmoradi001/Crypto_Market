@@ -18,6 +18,7 @@ class _CoinListScreenState extends State<CoinListScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    //after refresh - update and fill list
     cryptoList = widget.cryptoList;
   }
 
@@ -29,24 +30,57 @@ class _CoinListScreenState extends State<CoinListScreen> {
         backgroundColor: blackColor,
         automaticallyImplyLeading: false,
         centerTitle: true,
+        elevation: 0,
         title: Text(
           'کریپتو بازار',
           style: TextStyle(fontFamily: 'mr'),
         ),
       ),
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: () async {
-            List<Crypto> freshData = await _getData();
-            setState(() {
-              cryptoList = freshData;
-            });
-          },
-          child: ListView.builder(
-            itemCount: cryptoList!.length,
-            itemBuilder: (BuildContext context, index) =>
-                _getListTile(cryptoList![index]),
-          ),
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.all(8.0),
+              child: Directionality(
+                textDirection: TextDirection.rtl,
+                child: TextField(
+                  onChanged: (value) {
+                    _filterList(value);
+                  },
+                  decoration: InputDecoration(
+                    hintText: 'رمز ارز خود را جستجو کنید',
+                    hintStyle: TextStyle(
+                        fontFamily: 'mr', color: Colors.white, fontSize: 14),
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(width: 0, style: BorderStyle.none),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    filled: true,
+                    fillColor: greenColor,
+                  ),
+                ),
+              ),
+            ),
+            Expanded(
+              child: RefreshIndicator(
+                backgroundColor: greyColor,
+                color: blackColor,
+                onRefresh: () async {
+                  List<Crypto> freshData = await _getData();
+                  setState(
+                    () {
+                      cryptoList = freshData;
+                    },
+                  );
+                },
+                child: ListView.builder(
+                  itemCount: cryptoList!.length,
+                  itemBuilder: (BuildContext context, index) =>
+                      _getListTile(cryptoList![index]),
+                ),
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -119,11 +153,24 @@ class _CoinListScreenState extends State<CoinListScreen> {
     return percentChange <= 0 ? redColor : greenColor;
   }
 
+  //get Data List
   Future<List<Crypto>> _getData() async {
     var response = await Dio().get('https://api.coincap.io/v2/assets');
     List<Crypto> cryptoList = response.data['data']
         .map<Crypto>((jsonMapObject) => Crypto.fromMapJson(jsonMapObject))
         .toList();
     return cryptoList;
+  }
+
+  //get input enter Key word and change data for list
+  void _filterList(String enteredKeyWord) {
+    List<Crypto> cryptoResultList = [];
+
+    cryptoResultList = cryptoList!.where((element) => element.name.toLowerCase()
+        .contains(enteredKeyWord.toLowerCase())).toList();
+
+    setState(() {
+      cryptoList = cryptoResultList;
+    });
   }
 }
