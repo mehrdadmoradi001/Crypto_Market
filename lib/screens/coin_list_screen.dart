@@ -64,9 +64,12 @@ class _CoinListScreenState extends State<CoinListScreen> {
             ),
             Visibility(
               visible: isSearchLoadingVisible,
-              child: Text(
-                'در حال آپدیت اطلاعات رمز ارزها...',
-                style: TextStyle(fontFamily: 'mr', color: greenColor),
+              child: Padding(
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                child: Text(
+                  'در حال آپدیت اطلاعات رمز ارزها...',
+                  style: TextStyle(fontFamily: 'mr', color: greenColor),
+                ),
               ),
             ),
             Expanded(
