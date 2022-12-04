@@ -197,5 +197,4 @@ class _CoinListScreenState extends State<CoinListScreen> {
     });
   }
 
-
 }
