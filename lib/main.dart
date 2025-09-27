@@ -1,4 +1,4 @@
-import 'package:crypto_market/screens/home_screen.dart';
+import 'package:crypto_market/presentaion/coin_list/screens/coin_list_screen.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -17,7 +17,7 @@ class _ApplicationState extends State<Application> {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home:HomeScreen(),
+      home:CoinListScreen(),
     );
   }
 }
