@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../../constants/constants.dart';
+import '../../../../../constants/app_constants.dart';
 import '../../../domain/entities/crypto.dart';
 
 Widget CoinListItem(Crypto crypto) {

@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../constants/constants.dart';
+import 'package:dio/dio.dart';
+
+import '../../../../../constants/app_constants.dart';
 import '../../../domain/entities/crypto.dart';
 import '../bloc/coin_list_bloc.dart';
 import '../widgets/coin_list_item.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class CoinListScreen extends StatefulWidget {
-  CoinListScreen({Key? key,}) : super(key: key);
+  CoinListScreen({
+    Key? key,
+  }) : super(key: key);
 
   @override
   State<CoinListScreen> createState() => _CoinListScreenState();
@@ -17,7 +20,6 @@ class CoinListScreen extends StatefulWidget {
 
 class _CoinListScreenState extends State<CoinListScreen> {
   bool isSearchLoadingVisible = false;
-
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +62,8 @@ class _CoinListScreenState extends State<CoinListScreen> {
                       textDirection: TextDirection.rtl,
                       child: TextField(
                         onChanged: (value) {
-                          _filterList(value);
+                          BlocProvider.of<CoinListBloc>(context)
+                              .add(SearchCoinDataEvent(value));
                         },
                         decoration: InputDecoration(
                           hintText: 'رمز ارز خود را جستجو کنید',
@@ -123,47 +126,10 @@ class _CoinListScreenState extends State<CoinListScreen> {
         ),
     };
   }
-
-  //get Data List
-  Future<List<Crypto>> _getData() async {
-    var response = await Dio().get('https://api.coincap.io/v2/assets');
-    List<Crypto> cryptoList = response.data['data']
-        .map<Crypto>((jsonMapObject) => Crypto.fromMapJson(jsonMapObject))
-        .toList();
-    return cryptoList;
-  }
-
-  //get input enter Key word and change data for list
-  Future<void> _filterList(String enteredKeyWord) async {
-    List<Crypto> cryptoResultList = [];
-
-    if (enteredKeyWord.isEmpty) {
-      setState(() {
-        isSearchLoadingVisible = true;
-      });
-      var result = await _getData();
-      // setState(() {
-      //   cryptoList = result; //update list
-      //   isSearchLoadingVisible = false;
-      // });
-      return;
-    }
-
-    // cryptoResultList = cryptoList!
-    //     .where((element) => element.name
-    //         .toLowerCase() //
-    //         .contains(enteredKeyWord.toLowerCase()))
-    //     .toList();
-
-    setState(() {
-     // cryptoList = cryptoResultList;
-    });
-  }
 }
 
 class _buildSuccessListWidget extends StatelessWidget {
   const _buildSuccessListWidget({
-    super.key,
     required this.cryptoList,
   });
 
