@@ -1,5 +1,6 @@
-import 'package:crypto_market/presentaion/coin_list/screens/coin_list_screen.dart';
 import 'package:flutter/material.dart';
+
+import 'features/crypto_list/presentaion/coin_list/screens/coin_list_screen.dart';
 
 void main() {
   runApp(const Application());
