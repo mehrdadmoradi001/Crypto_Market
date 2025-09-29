@@ -1,61 +1,65 @@
-import 'package:bloc/bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:dio/dio.dart';
+import '../../../../../core/network/network_exception.dart'; // Import NetworkException
 import '../../../domain/entities/crypto.dart';
+import '../../../../../core/di/service_locator.dart';
+import '../../../domain/usecases/get_coins_use_case.dart';
+import '../../../domain/usecases/search_coins_use_case.dart';
+
 part 'coin_list_event.dart';
 part 'coin_list_state.dart';
 
 class CoinListBloc extends Bloc<CoinListEvent, CoinListState> {
+  final GetCoinsUseCase _getCoinsUseCase = locator<GetCoinsUseCase>();
+  final SearchCoinsUseCase _searchCoinsUseCase = locator<SearchCoinsUseCase>();
+
   CoinListBloc() : super(CoinListLoadingState()) {
-    on<LoadInitialCoinDataEvent>((event, emit) async {
-      emit(CoinListLoadingState());
-      var response = await Dio().get(
-          'https://rest.coincap.io/v3/assets?apiKey=658ec474b1f482e18ab745c9b26c4cb4a9a4f31486679c749c0e65b8d9b1ab25');
-      List<Crypto> cryptoList = response.data['data']
-          .map<Crypto>((jsonMapObject) => Crypto.fromMapJson(jsonMapObject))
-          .toList();
+    on<LoadInitialCoinDataEvent>(_onLoadInitialCoinData);
+    on<RefreshCoinDataEvent>(_onRefreshCoinData);
+    on<SearchCoinDataEvent>(_onSearchCoinData);
+  }
 
-      if (response.statusCode == 200) {
-        emit(CoinListSuccessState(cryptoList));
-      } else {
-        emit(CoinListFailedState(response.statusMessage!));
-      }
-    });
+  Future<void> _onLoadInitialCoinData(
+      LoadInitialCoinDataEvent event,
+      Emitter<CoinListState> emit,
+      ) async {
+    emit(CoinListLoadingState());
+    try {
+      final cryptoList = await _getCoinsUseCase();
+      emit(CoinListSuccessState(cryptoList));
+    } on NetworkException catch (e) { // Catch specific exception
+      emit(CoinListFailedState(e.message)); // Pass the user-friendly message
+    } catch (e) { // Catch any other generic errors
+      emit(CoinListFailedState('An unexpected error occurred.'));
+    }
+  }
 
-    on<RefreshCoinDataEvent>((event, emit) async {
-      emit(CoinListLoadingState());
-      var response = await Dio().get(
-          'https://rest.coincap.io/v3/assets?apiKey=658ec474b1f482e18ab745c9b26c4cb4a9a4f31486679c749c0e65b8d9b1ab25');
-      List<Crypto> cryptoList = response.data['data']
-          .map<Crypto>((jsonMapObject) => Crypto.fromMapJson(jsonMapObject))
-          .toList();
+  Future<void> _onRefreshCoinData(
+      RefreshCoinDataEvent event,
+      Emitter<CoinListState> emit,
+      ) async {
+    try {
+      final cryptoList = await _getCoinsUseCase();
+      emit(CoinListSuccessState(cryptoList));
+    } on NetworkException catch (e) {
+      emit(CoinListFailedState(e.message));
+    } catch (e) {
+      emit(CoinListFailedState('An unexpected error occurred.'));
+    }
+  }
 
-      if (response.statusCode == 200) {
-        emit(CoinListSuccessState(cryptoList));
-      } else {
-        emit(CoinListFailedState(response.statusMessage!));
-      }
-    });
-
-    on<SearchCoinDataEvent>((event, emit) async {
-      emit(CoinListLoadingState());
-      List<Crypto> cryptoResultList = [];
-
-      var response = await Dio().get(
-          'https://rest.coincap.io/v3/assets?apikey=658ec474b1f482e18ab745c9b26c4cb4a9a4f31486679c749c0e65b8d9b1ab25');
-      List<Crypto> cryptoList = response.data['data']
-          .map<Crypto>((jsonMapObject) => Crypto.fromMapJson(jsonMapObject))
-          .toList();
-
-      cryptoResultList = cryptoList.where((element) {
-        return element.name.toLowerCase().contains(event.query.toLowerCase());
-      }).toList();
-
-      if (response.statusCode == 200) {
-        emit(CoinListSuccessState(cryptoResultList));
-      } else {
-        emit(CoinListFailedState(response.statusMessage!));
-      }
-    });
+  Future<void> _onSearchCoinData(
+      SearchCoinDataEvent event,
+      Emitter<CoinListState> emit,
+      ) async {
+    emit(CoinListLoadingState());
+    try {
+      final cryptoList = await _searchCoinsUseCase(params: SearchParams(event.query));
+      emit(CoinListSuccessState(cryptoList));
+    } on NetworkException catch (e) {
+      emit(CoinListFailedState(e.message));
+    } catch (e) {
+      emit(CoinListFailedState('An unexpected error occurred.'));
+    }
   }
 }

@@ -1,19 +1,17 @@
-import '../../../../constants/api_constants.dart';
+import '../../../../core/network/api_service.dart';
 import '../../../../core/network/http_clients.dart';
 import '../../domain/entities/crypto.dart';
 import 'coin_remote_data_source.dart';
 
 class CoinRemoteDataSourceImpl implements CoinRemoteDataSource{
 
-  final HttpClients httpClients;
-  CoinRemoteDataSourceImpl({required this.httpClients});
+  final ApiService _apiService;
+  CoinRemoteDataSourceImpl({required ApiService apiService}) : _apiService = apiService;
 
   @override
   Future<List<Crypto>> getCoinList() async {
     try {
-      final response = await httpClients.get(
-          '${ApiConstants.assets}?apiKey=${ApiConstants.apiKey}'
-      );
+      final response = await _apiService.getAssets();
 
       final List<dynamic> data = response.data['data'];
       return data.map<Crypto>((json) => Crypto.fromMapJson(json)).toList();
