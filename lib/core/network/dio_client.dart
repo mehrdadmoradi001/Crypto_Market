@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'http_clients.dart';
 import 'network_exception.dart';
 
@@ -17,6 +18,13 @@ class DioHttpClient extends HttpClients {
     receiveTimeout: receiveTimeout,
   )) {
     _dio.interceptors.addAll(interceptors);
+    if (kDebugMode) {
+      _dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        logPrint: (obj) => debugPrint(obj.toString()),
+      ));
+    }
   }
 
   @override

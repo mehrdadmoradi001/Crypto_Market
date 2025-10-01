@@ -25,11 +25,15 @@ class CoinListBloc extends Bloc<CoinListEvent, CoinListState> {
       ) async {
     emit(CoinListLoadingState());
     try {
+      debugPrint("5. BLoC is calling GetCoinsUseCase...");
       final cryptoList = await _getCoinsUseCase();
+      debugPrint("6. BLoC received ${cryptoList.length} items. Emitting SuccessState.");
       emit(CoinListSuccessState(cryptoList));
     } on NetworkException catch (e) { // Catch specific exception
       emit(CoinListFailedState(e.message)); // Pass the user-friendly message
     } catch (e, stackTrace) {
+      debugPrint("!!! ERROR reached BLoC: $e");
+      debugPrint(stackTrace.toString());
       if (kDebugMode) {
         print('An unexpected error occurred in CoinListBloc: $e');
         print(stackTrace);
