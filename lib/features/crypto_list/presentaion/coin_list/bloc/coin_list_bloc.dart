@@ -1,5 +1,5 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meta/meta.dart';
 import '../../../../../core/network/network_exception.dart'; // Import NetworkException
 import '../../../domain/entities/crypto.dart';
 import '../../../../../core/di/service_locator.dart';
@@ -29,7 +29,11 @@ class CoinListBloc extends Bloc<CoinListEvent, CoinListState> {
       emit(CoinListSuccessState(cryptoList));
     } on NetworkException catch (e) { // Catch specific exception
       emit(CoinListFailedState(e.message)); // Pass the user-friendly message
-    } catch (e) { // Catch any other generic errors
+    } catch (e, stackTrace) {
+      if (kDebugMode) {
+        print('An unexpected error occurred in CoinListBloc: $e');
+        print(stackTrace);
+      }
       emit(CoinListFailedState('An unexpected error occurred.'));
     }
   }
