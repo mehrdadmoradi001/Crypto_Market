@@ -1,8 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:dio/dio.dart';
-
 import '../../../../../constants/app_constants.dart';
 import '../../../domain/entities/crypto.dart';
 import '../bloc/coin_list_bloc.dart';
@@ -20,6 +19,13 @@ class CoinListScreen extends StatefulWidget {
 
 class _CoinListScreenState extends State<CoinListScreen> {
   bool isSearchLoadingVisible = false;
+  Timer? _debounce;
+
+  @override
+  void dispose() {
+    _debounce?.cancel(); // حتما تایمر را در dispose از بین ببرید
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,8 +68,11 @@ class _CoinListScreenState extends State<CoinListScreen> {
                       textDirection: TextDirection.rtl,
                       child: TextField(
                         onChanged: (value) {
-                          BlocProvider.of<CoinListBloc>(context)
-                              .add(SearchCoinDataEvent(value));
+                          if (_debounce?.isActive ?? false) _debounce!.cancel();
+                          _debounce = Timer(const Duration(milliseconds: 500), () {
+                            BlocProvider.of<CoinListBloc>(context)
+                                .add(SearchCoinDataEvent(value));
+                          });
                         },
                         decoration: InputDecoration(
                           hintText: 'رمز ارز خود را جستجو کنید',

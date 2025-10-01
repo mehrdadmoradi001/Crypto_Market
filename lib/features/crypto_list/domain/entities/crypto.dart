@@ -30,20 +30,20 @@ class Crypto {
   }
 
 
-  static double _parseDouble(dynamic value,  {double defaultDoubleValue = 0.0}) {
+  static double _parseDouble(dynamic value, {double defaultDoubleValue = 0.0}) {
     if (value == null) return defaultDoubleValue;
-    if (value is double) return defaultDoubleValue;
-    if (value is int) return defaultDoubleValue;
+    if (value is double) return value;
+    if (value is int) return value.toDouble();
     if (value is String) {
       return double.tryParse(value) ?? defaultDoubleValue;
     }
     return defaultDoubleValue;
   }
 
-  static int _parseInt(dynamic value,  {int defaultIntValue = 0}) {
+  static int _parseInt(dynamic value, {int defaultIntValue = 0}) {
     if (value == null) return defaultIntValue;
-    if (value is int) return defaultIntValue;
-    if (value is double) return defaultIntValue;
+    if (value is int) return value;
+    if (value is double) return value.toInt();
     if (value is String) {
       return int.tryParse(value) ?? defaultIntValue;
     }
