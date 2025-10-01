@@ -1,6 +1,3 @@
-// lib/config/app_config.dart
-
-// یک کلاس abstract برای مقادیر ثابت برنامه
 abstract class BaseConfig {
   String get baseUrl;
   String get apiKey;
@@ -8,11 +5,9 @@ abstract class BaseConfig {
   Duration get receiveTimeout;
 }
 
-// کلاسی که کانفیگ فعال را نگه می‌دارد
 class AppConfig {
   static late BaseConfig _config;
 
-  // تابعی برای تنظیم کانفیگ بر اساس محیط
   static void setEnvironment(Environment env) {
     switch (env) {
       case Environment.dev:
@@ -24,48 +19,41 @@ class AppConfig {
     }
   }
 
-  // Getter برای دسترسی به کانفیگ فعال
   static BaseConfig get config {
     return _config;
   }
 }
 
-// enum برای تعریف محیط‌های مختلف
 enum Environment {
   dev,
   prod,
 }
 
-// پیاده‌سازی کانفیگ برای محیط توسعه (Development)
 class DevConfig implements BaseConfig {
   @override
-  String get baseUrl => "https://rest.coincap.io/v3"; // آدرس تست
+  String get baseUrl => "https://api.coincap.io/v3";
 
   @override
-  String get apiKey => "YOUR_DEV_API_KEY";
+  String get apiKey => "658ec474b1f482e18ab745c9b26c4cb4a9a4f31486679c749c0e65b8d9b1ab25";
 
   @override
-  // TODO: implement connectTimeout
-  Duration get connectTimeout => throw UnimplementedError();
+  Duration get connectTimeout => Duration(seconds: 20);
 
   @override
-  // TODO: implement receiveTimeout
-  Duration get receiveTimeout => throw UnimplementedError(); // کلید تست شما
+  Duration get receiveTimeout => Duration(seconds: 20);
 }
 
-// پیاده‌سازی کانفیگ برای محیط پروداکشن (Production)
 class ProdConfig implements BaseConfig {
   @override
-  String get baseUrl => "https://api.production.com/v1"; // آدرس اصلی
+  String get baseUrl => "https://api.coincap.io/v3";
+
 
   @override
-  String get apiKey => "YOUR_PRODUCTION_API_KEY";
+  String get apiKey => "658ec474b1f482e18ab745c9b26c4cb4a9a4f31486679c749c0e65b8d9b1ab25";
 
   @override
-  // TODO: implement connectTimeout
-  Duration get connectTimeout => throw UnimplementedError();
+  Duration get connectTimeout => Duration(seconds: 20);
 
   @override
-  // TODO: implement receiveTimeout
-  Duration get receiveTimeout => throw UnimplementedError(); // کلید اصلی شما
+  Duration get receiveTimeout => Duration(seconds: 20);
 }
