@@ -14,18 +14,6 @@ class CoinRepositoryImpl implements CoinRepository {
 
   @override
   Future<List<Crypto>> searchCoins(String query) async {
-    final allCoins = await remoteDataSource.getCoinList();
-
-    if (query.isEmpty) {
-      return allCoins;
-    }
-
-    final lowercaseQuery = query.toLowerCase();
-    return allCoins
-        .where((coin) =>
-            coin.name.toLowerCase().contains(lowercaseQuery) ||
-            coin.symbol.toLowerCase().contains(lowercaseQuery) ||
-            coin.id.toLowerCase().contains(lowercaseQuery))
-        .toList();
+    return await remoteDataSource.getCoinList(query: query);
   }
 }

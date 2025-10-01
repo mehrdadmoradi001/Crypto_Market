@@ -1,5 +1,5 @@
 import '../../domain/entities/crypto.dart';
 
 abstract class CoinRemoteDataSource{
-  Future<List<Crypto>> getCoinList();
-} 
+  Future<List<Crypto>> getCoinList({String? query});
+}
