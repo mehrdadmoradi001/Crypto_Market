@@ -6,7 +6,6 @@ import '../../features/crypto_list/data/repositories/coin_repository_impl.dart';
 import '../../features/crypto_list/domain/repositories/coin_repository.dart';
 import '../../features/crypto_list/domain/usecases/get_coins_use_case.dart';
 import '../../features/crypto_list/domain/usecases/search_coins_use_case.dart';
-import '../network/api_key_interceptor.dart';
 import '../network/api_service.dart';
 import '../network/dio_client.dart';
 import '../network/http_clients.dart';
@@ -28,7 +27,11 @@ class ServiceLocator {
         connectTimeout: AppConfig.config.connectTimeout,
         receiveTimeout: AppConfig.config.receiveTimeout,
         interceptors: [
-          ApiKeyInterceptor(),
+          // ApiKeyInterceptor در این لیست کامنت شد.
+          /// دلیل: مهاجرت از API v2 به v3 وب‌سایت CoinCap.
+          /// در نسخه v3، احراز هویت از طریق Query Parameter انجام می‌شود و نه Header.
+          /// منطق افزودن apiKey به CoinRemoteDataSourceImpl منتقل شده است.
+          //ApiKeyInterceptor(),
         ],
       ),
     );
