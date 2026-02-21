@@ -10,15 +10,18 @@
 .svn/
 migrate_working_dir/
 
+# Windows specifics
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
 # IntelliJ related
 *.iml
 *.ipr
 *.iws
 .idea/
 
-# The .vscode folder contains launch configuration and tasks you configure in
-# VS Code which you may wish to be included in version control, so this line
-# is commented out by default.
+# VS Code
 #.vscode/
 
 # Flutter/Dart/Pub related
@@ -42,3 +45,10 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# ----------------------------------------------------------
+# FVM Configuration (بخش اضافه شده)
+# ----------------------------------------------------------
+
+# FVM Version Cache
+.fvm/
